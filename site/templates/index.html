@@ -1,0 +1,501 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Background image -->
+<div id="intro" class="bg-image shadow-2-strong">
+
+    <div class="mask d-flex align-items-start h-100 flex-column" style="background-color: rgba(0, 0, 0, 0.4);">
+        
+        <!-- start downloadForm -->
+        <div class="mask container mt-5 w-50 ms-5 bg-white rounded" style="--bs-bg-opacity: .75;" id="download">
+
+            <div class="row mb-3 mt-3">
+                <div class="col">
+                      <p class="h5 bold"><span class="fs-6" id="step">1</span>Download OurAirports Data</p>
+                </div>
+
+                {% if session["filesDownloaded"] %}
+                <div class="col-2 ms-auto" id="filesDownloaded">
+                    <span class="material-icons">
+                        done_all
+                    </span>
+                </div>
+                {% endif %}
+
+            </div>
+
+            {% if not session["filesDownloaded"] %}
+            <fieldset>
+            <form id="downloadForm" name="downloadForm" method="post">
+            {% else %}
+            <fieldset disabled>
+            <form id="downloadForm" name="downloadForm" method="post" hidden>
+            {% endif %}
+
+                {{ downloadForm.hidden_tag() }}
+
+                
+                <div class="row mb-3 mt-3">
+                    <div class="col">
+                        <div class="form-floating">  
+                            {{ downloadForm.baseWebPathField(class="form-control", placeholder="Web Base Path") }}
+                            {{ downloadForm.baseWebPathField.label(class="form-label") }}
+                            <div id="baseWebPathFieldHelp" class="form-text">This is the location for OurAirports data files.</div>
+                        </div>
+                    </div>       
+                </div>
+
+                <div class="row mb-3 mt-3">
+                    <div class="col">
+                        <div class="form-floating">
+                            {{ downloadForm.sourcesBasePathField(class="form-control", placeholder="sources") }}
+                            {{ downloadForm.sourcesBasePathField.label(class="form-label") }}
+                            <div id="sourcesBasePathHelp" class="form-text">Target path under application root.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-3">
+                    {% if session["filesDownloaded"] %}
+                        {{ downloadForm.submitField(class="btn btn-outline-primary", id="downloadButton", disabled = true) }}
+                    {% else %}
+                        {{ downloadForm.submitField(class="btn btn-outline-primary", id="downloadButton") }}
+                    {% endif %}
+                    </div>
+
+                    <div class="col-3 spinner-border text-primary" id="downloadSpinner" role="status" hidden>
+                        <span class="visually-hidden">Downloading...</span>
+                    </div>
+
+
+
+                </div>
+
+            </form>
+            </fieldset>
+
+        </div>
+        <!-- end downloadForm -->
+
+
+
+    
+        <!-- start databaseForm -->
+        <div class="mask container mt-5 w-50 ms-5 bg-white rounded shadow-lg" style="--bs-bg-opacity: .7;" id="createTables">
+
+            <div class="row mb-3 mt-3">
+                <div class="col">
+                      <p class="h5 bold"><span id="step">2</span>Create Tables In PostgreSQL Database</p>
+                </div>
+                {% if session["tablesCreated"] %}
+                <div class="col-2 ms-auto" id="tablesCreated">
+                    <span class="material-icons">
+                        done_all
+                    </span>
+                </div>
+                {% endif %}
+
+            </div>
+
+        {% if session["filesDownloaded"] and not session["tablesCreated"] %}
+            </fieldset>
+            <form id="databaseForm" name="databaseForm" method="post">
+        {% else %}
+            <fieldset disabled>
+            <form id="databaseForm" name="databaseForm" method="post" hidden>
+        {% endif %}
+            
+                {{ databaseForm.hidden_tag() }}
+
+                <div class="row mb-3 mt-3">
+                    <div class="col-3">
+                        <div class="form-floating">
+                            {{ databaseForm.dbHostField(class="form-control", placeholder="<ip>") }}
+                            {{ databaseForm.dbHostField.label(class="form-label") }}
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-floating">
+                            {{ databaseForm.dbPortField(class="form-control", placeholder="5432") }}
+                            {{ databaseForm.dbPortField.label(class="form-label") }}
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-floating">
+                            {{ databaseForm.dbUsernameField(class="form-control", placeholder="starburst") }}
+                            {{ databaseForm.dbUsernameField.label(class="form-label") }}
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-floating">
+                            {{ databaseForm.dbPasswordField(class="form-control", placeholder="starburst") }}
+                            {{ databaseForm.dbPasswordField.label(class="form-label") }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3 mt-3">
+                    <div class="col-3">
+                        <div class="form-floating">
+                            {{ databaseForm.dbnameField(class="form-control") }}
+                            {{ databaseForm.dbnameField.label(class="form-label") }}
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-floating">
+                            {{ databaseForm.defaultDbnameField(class="form-control", placeholder="starburst") }}
+                            {{ databaseForm.defaultDbnameField.label(class="form-label") }}
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-floating">
+                            {{ databaseForm.schemaField(class="form-control", placeholder="airports") }}
+                            {{ databaseForm.schemaField.label(class="form-label") }}
+                        </div>
+                    </div>
+                    <div class="col-3">
+                        <div class="form-floating">
+                            {{ databaseForm.commitSizeField(class="form-control", placeholder="1000") }}
+                            {{ databaseForm.commitSizeField.label(class="form-label") }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-3">
+                    {% if session["tablesCreated"] %}    
+                    
+                        {{ databaseForm.submitField(class="btn btn-outline-primary", id="createTablesButton", disabled = true) }}
+                    
+                    {% else %}
+
+                        {{ databaseForm.submitField(class="btn btn-outline-primary", id="createTablesButton") }}
+                    
+                    {% endif %}
+
+                    </div>
+
+                    <div class="col-3 spinner-border text-primary" id="tablesSpinner" role="status" hidden>
+                        <span class="visually-hidden">Creating tables...</span>
+                    </div>
+
+                </div>
+
+            </form>
+            </fieldset>
+        
+        </div>
+        <!-- end databaseForm -->
+
+
+
+
+        <!-- start uploadForm -->
+        <div class="mask container mt-5 w-50 ms-5 bg-white rounded shadow-lg align-self-baseline" style="--bs-bg-opacity: .7;" id="upload">
+
+            <div class="row mb-3 mt-3">
+                <div class="col">
+                      <p class="h5 bold"><span id="step">3</span>Upload OurAirports data to S3 bucket</p>
+                </div>
+                {% if session["filesUploaded"] %}
+                <div class="col-2 ms-auto" id="filesUploaded">
+                    <span class="material-icons">
+                        done_all
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+
+        {% if session["tablesCreated"] and not session["filesUploaded"] %}
+            </fieldset>
+            <form id="uploadForm" name="uploadForm" method="post">
+        {% else %}
+            <fieldset disabled>
+            <form id="uploadForm" name="uploadForm" method="post" hidden>
+        {% endif %}
+            
+                {{ uploadForm.hidden_tag() }}
+
+                <div class="row mb-3 mt-3">
+                    <div class="col-6">
+                        <div class="form-floating">
+                            {{ uploadForm.endpointField(class="form-control", placeholder="http://<ip>:9020") }}
+                            {{ uploadForm.endpointField.label(class="form-label") }}
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-floating">
+                            {{ uploadForm.bucketNameField(class="form-control", placeholder="airports") }}
+                            {{ uploadForm.bucketNameField.label(class="form-label") }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3 mt-3">
+                    <div class="col-6">
+                        <div class="form-floating">
+                            {{ uploadForm.keyField(class="form-control", placeholder="object key") }}
+                            {{ uploadForm.keyField.label(class="form-label") }}
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="form-floating">
+                            {{ uploadForm.secretField(class="form-control", placeholder="secret") }}
+                            {{ uploadForm.secretField.label(class="form-label") }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-3">
+                    {% if session["filesUploaded"] %}    
+                    
+                        {{ uploadForm.submitField(class="btn btn-outline-primary", id="uploadButton", disabled = true) }}
+                    
+                    {% else %}
+
+                        {{ uploadForm.submitField(class="btn btn-outline-primary", id="uploadButton") }}
+                    
+                    {% endif %}
+
+                    </div>
+
+                    <div class="col-3 spinner-border text-primary" id="uploadSpinner" role="status" hidden>
+                        <span class="visually-hidden">Creating tables...</span>
+                    </div>
+
+                </div>
+
+            </form>
+            </fieldset>
+        
+        </div>
+        <!-- end uploadForm -->
+
+
+
+
+
+        <!-- start scriptsCraeteForm -->
+        <div class="mask container mt-5 w-50 ms-5 bg-white rounded shadow-lg align-self-baseline" style="--bs-bg-opacity: .7;" id="scripts">
+
+            <div class="row mb-3 mt-3">
+                <div class="col">
+                      <p class="h5 bold"><span id="step">4</span>Create DDLH Catalog Definitions and Scripts</p>
+                </div>
+                {% if session["scriptsCreated"] %}
+                <div class="col-2 ms-auto" id="filesUploaded">
+                    <span class="material-icons">
+                        done_all
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+        
+        {% if session["filesUploaded"] and not session["scriptsCreated"] %}
+            <fieldset>
+            <form id="createScriptsForm" name="createScriptsForm" method="post">
+        {% else %}
+            <fieldset disabled>
+            <form id="createScriptsForm" name="createScriptsForm" method="post" hidden>
+        {% endif %}
+
+                {{ createScriptsForm.hidden_tag() }}
+                <div class="row mb-3 mt-3">
+                    <div class="col">
+                        <div class="form-floating">  
+                            {{ createScriptsForm.scriptsBasePathField(class="form-control", placeholder="Scripts Path") }}
+                            {{ createScriptsForm.scriptsBasePathField.label(class="form-label") }}
+                            <div id="scriptsBasePathFieldHelp" class="form-text">This is the location for generated catalog definitions and SQL scripts.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3 mt-3">
+                    <div class="col">
+                        <div class="form-check form-switch">
+                            {{ createScriptsForm.mviewPrivilegesField.label(class="form-check-label") }}
+                            
+                            {% if session['mviewPrivileges'] %}  
+                            {{ createScriptsForm.mviewPrivilegesField(class="form-check-input", checked=True) }}
+                            {% else %}
+                            {{ createScriptsForm.mviewPrivilegesField(class="form-check-input") }}
+                            {% endif %}
+
+                            <div id="scriptsBasePathFieldHelp" class="form-text">When set this will create necessary privileges and roles and assign them to respective users on DDAE.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-3">
+                    {% if session["scriptsCreated"] %}    
+                    
+                        {{ createScriptsForm.submitField(class="btn btn-outline-primary", id="createScriptsButton", disabled = true) }}
+                    
+                    {% else %}
+
+                        {{ createScriptsForm.submitField(class="btn btn-outline-primary", id="createScriptsButton") }}
+                    
+                    {% endif %}
+
+                    </div>
+
+                    <div class="col-3 spinner-border text-primary" id="scriptsSpinner" role="status" hidden>
+                        <span class="visually-hidden">Creating definitions and scripts...</span>
+                    </div>
+
+                </div>
+            
+            </form>
+            </fieldset>
+
+        </div>
+        <!-- end scriptsCraeteForm -->
+
+    
+        <!-- start controlForm -->
+        <div class="mask container mt-5 w-50 ms-5 bg-transparent align-self-baseline" id="control">
+        
+            <form id="controlForm" name="controlForm" method="post">
+            
+                {{ controlForm.hidden_tag() }}
+   
+                <div class="row">
+                    <div class="col g-0">
+                        <a class="btn btn-outline-warning", id="resetButton" href=" {{ url_for('index') }} " target="_self">Reset</a>
+
+                        {% if session["scriptsCreated"] %}
+
+                        {{ controlForm.downloadScriptsField( class="btn btn-primary ms-2", id="downloadScriptsButton" ) }}
+
+                        {% else %}
+
+                        {{ controlForm.downloadScriptsField( class="btn btn-primary ms-2", id="downloadScriptsButton", disabled= true ) }}
+
+                        {% endif %}
+
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <!-- end controlForm -->
+
+    </div>
+</div>
+{% endblock %}
+
+
+{% block custom_js %}
+<script type="text/javascript">
+
+    /* Hide/Show downloadSpinner */
+    let downloadSpinner = document.querySelector("#downloadSpinner");
+    let downloadButton = document.querySelector("#downloadButton");
+
+    let click_download = () => {
+        downloadSpinner.removeAttribute("hidden");
+    }
+
+    downloadButton.addEventListener("click", click_download);
+
+    /* Hide/Show tablesSpinner */
+    let tablesSpinner = document.querySelector("#tablesSpinner");
+    let createTablesButton = document.querySelector("#createTablesButton");
+
+    let click_create_tables = () => {
+        let createTablesForm = document.forms[""]
+        tablesSpinner.removeAttribute("hidden");
+    }
+
+    createTablesButton.addEventListener("click", click_create_tables);
+
+    /* Hide/Show uploadSpinner */
+    let uploadSpinner = document.querySelector("#uploadSpinner");
+    let uploadButton = document.querySelector("#uploadButton");
+
+    let click_upload = () => {
+        uploadSpinner.removeAttribute("hidden");
+    }
+
+    uploadButton.addEventListener("click", click_upload);
+
+    /* Hide/Show scriptsSpinner */
+    let scriptsSpinner = document.querySelector("#scriptsSpinner");
+    let createScriptsButton = document.querySelector("#createScriptsButton");
+
+    let click_create_scripts = () => {
+        scriptsSpinner.removeAttribute("hidden");
+    }
+
+    createScriptsButton.addEventListener("click", click_create_scripts);
+
+    /* Expand/Collapse forms */
+    let downloadForm = document.querySelector("#downloadForm");
+    let databaseForm = document.querySelector("#databaseForm");
+    let uploadForm = document.querySelector("#uploadForm");
+    let createScriptsForm = document.querySelector("#createScriptsForm");
+
+    let downloadTitle = document.querySelector("#download p");
+    let databaseTitle = document.querySelector("#createTables p");
+    let uploadTitle = document.querySelector("#upload p");
+    let scriptsTitle = document.querySelector("#scripts p")
+
+    click_downloadTitle = () => {
+        let hidden = downloadForm.getAttribute("hidden");
+        if(hidden) {
+            downloadForm.removeAttribute("hidden");
+            databaseForm.setAttribute("hidden", true);
+            uploadForm.setAttribute("hidden", true);
+            createScriptsForm.setAttribute("hidden", true);
+        } else {
+            downloadForm.setAttribute("hidden", true);
+        }
+    }
+    downloadTitle.addEventListener("click", click_downloadTitle);
+
+    click_databaseTitle = () => {
+        let hidden = databaseForm.getAttribute("hidden");
+        if(hidden) {
+            downloadForm.setAttribute("hidden", true);
+            databaseForm.removeAttribute("hidden");
+            uploadForm.setAttribute("hidden", true);
+            createScriptsForm.setAttribute("hidden", true);
+        } else {
+            databaseForm.setAttribute("hidden", true);
+        }
+    }
+    databaseTitle.addEventListener("click", click_databaseTitle);
+
+    click_uploadTitle = () => {
+        let hidden = uploadForm.getAttribute("hidden");
+        if(hidden) {
+            downloadForm.setAttribute("hidden", true);
+            databaseForm.setAttribute("hidden", true);
+            uploadForm.removeAttribute("hidden");
+            createScriptsForm.setAttribute("hidden", true);
+        } else {
+            uploadForm.setAttribute("hidden", true);
+        }
+    }
+    uploadTitle.addEventListener("click", click_uploadTitle);
+
+    click_scriptsTitle = () => {
+        let hidden = createScriptsForm.getAttribute("hidden");
+        if(hidden) {
+            downloadForm.setAttribute("hidden", true);
+            databaseForm.setAttribute("hidden", true);
+            uploadForm.setAttribute("hidden", true);
+            createScriptsForm.removeAttribute("hidden");
+        } else {
+            createScriptsForm.setAttribute("hidden", true);
+        }
+    }
+    scriptsTitle.addEventListener("click", click_scriptsTitle);
+
+
+</script>
+{% endblock %}
+

@@ -1,0 +1,75 @@
+/* Default font */
+* {
+    font-family: 'Lato';
+    font-size: 1rem;
+    font-weight: 400;
+}
+
+/* Background image */
+#intro {
+    background-image: url('../pic/sunset-5930547_1920.jpg');
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+/* username and password fields in the log_in page */
+#username::placeholder, #password::placeholder, #host::placeholder, #port::placeholder {
+    color: #B3B6B7;
+    font-size: 0.9rem; 
+}
+
+#intro form input[type="text"], #intro form input[type="password"] {
+    font-family: 'Lato';
+    font-weight: 400;
+    color: rgba(13,110,253,1);
+}
+
+
+#filesDownloaded, #tablesCreated, #filesUploaded {
+    font-family: 'Lato';
+    font-weight: 700;
+    color: rgba(13,110,253,1);
+    font-size: 1.2rem
+}
+
+#step {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-right: 7px;
+    padding-left: 7px;
+    display: inline-block;
+    border-style: solid;
+    border-radius: 50px;
+    border-width: 2px;
+    margin-right: 10px;
+}
+
+.bold {
+    font-weight: 400;
+}
+
+#download p:hover, #createTables p:hover, #upload p:hover {
+    color: rgba(13,110,253,1);
+}
+
+/*
+#resetButton, #downloadScriptsButton {
+    background-color: rgba(255,255,255, 0.8);
+}
+
+#resetButton:hover, #resetButton:active, #downloadScriptsButton:hover, #downloadScriptsButton:active {
+    background-color: rgba(13,110,253,1);
+}
+*/
+
+
+#downloadScriptsButton {
+    background-color: rgba(13,110,253,0.7);
+}
+
+#downloadScriptsButton:hover, #downloadScriptsButton:active {
+    background-color: rgba(13,110,253,1);
+}
+

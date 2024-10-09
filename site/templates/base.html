@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="EN">
+    <head>
+        <meta charset="utf-8">
+        <title>Airports Pipeline</title>
+        <!-- favicon -->
+        <link rel="icon" type="image/png" sizes="32x32" href=" {{ url_for('static', filename='icon/favicon-32x32.png') }} ">
+
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="{{ url_for('static', filename = 'css/bootstrap.css') }}">
+        <script src=" {{ url_for('static', filename = 'js/bootstrap.bundle.js') }}"></script>
+
+        <!-- Custom CSS -->
+        <link rel="stylesheet" href="{{ url_for('static', filename = 'css/fonts.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename = 'css/icons.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename = 'css/master.css') }}">
+
+        
+    </head>
+    <body style="background-color: #193745";>
+        
+
+        <div class="container-fluid text-light bg-primary py-1">
+            <h5>Airports Data Pipeline Expansion to HOL-0567-01</h2>
+        </div>
+
+        {% block navbar %}
+        <nav class="navbar navbar-expand-md bg-white" data-bs-theme="light">
+
+            <div class="container-fluid">
+                <a class="navbar-brand" href="https://www.dell.com/support/kbdoc/en-us/000223035/dell-data-lakehouse-documentation-index" target="_blank">
+                    <img src=" {{ url_for('static', filename='icon/DellTech_Logo_Prm_Blue_Gry_rgb.jpg') }} " alt='Dell Technologies' style="height: 1rem; max-width: auto;">
+                </a>
+
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav">
+
+                    <!-- Disabled home
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    </li>
+                    -->
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://ourairports.com/data/" target="_blank">OurAirports</a>
+                    </li>
+
+                    <li class="nav-item dropdown">
+                        {% if not session["scriptsCreated"] %}
+                        <a class="nav-link dropdown-toggle disabled" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        {% else %}
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        {% endif %}
+
+                        Definitions and Scrtips
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href=" {{ url_for('scripts', item = 'catalogs') }} " target = "_blank">0. Catalog Definitions</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href=" {{ url_for('scripts', item = 'postgresql') }} " target = "_blank">1. Postgresql Catalog</a></li>
+                        <li><a class="dropdown-item" href=" {{ url_for('scripts', item = 'hive') }} " target = "_blank">2. Hive Catalog</a></li>
+                        <li><a class="dropdown-item" href=" {{ url_for('scripts', item = 'federated') }} " target = "_blank">3. Federated Queries</a></li>
+                        <li><a class="dropdown-item" href=" {{ url_for('scripts', item = 'iceberg') }} " target = "_blank">4. Iceberg Catalog</a></li>
+                        <li><a class="dropdown-item" href=" {{ url_for('scripts', item = 'views') }} " target = "_blank">5. View, Materialized View</a></li>
+                        <li><a class="dropdown-item" href=" {{ url_for('scripts', item = 'powerbi') }} " target = "_blank">6. DDAE Credentials For PowerBI</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item">
+                        <a id="logout" class="nav-link ms-3" href="{{ url_for('login') }}" target="_self">Log out</a>
+                    </li>
+
+
+                </ul>
+              </div>
+
+            </div>
+          </nav>
+
+        {% endblock %}
+
+        {% block content %}
+        {% endblock %}
+
+
+    {% block custom_js %}
+    {% endblock %}
+                
+    </body>
+
+
+
+</html>

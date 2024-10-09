@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block navbar %}
+{% endblock %}
+
+
+{% block content %}
+<!-- Background image -->
+<div id="intro" class="bg-image shadow-2-strong">
+    <div class="mask d-flex align-items-center h-100" style="background-color: rgba(0, 0, 0, 0.4);">
+
+        <!-- Log in prompt-->
+        <div class="container">
+            <!-- A single column row -->
+            <div class="row justify-content-center">
+
+                <div class="col-4">
+                    <form class="bg-white rounded shadow-lg p-5" id="loginForm" name="loginForm" method="post">
+                        {{ loginForm.hidden_tag() }}
+                                        
+                        <!-- User name input -->
+                        <div class="mb-3">
+                            <!-- <input type="text" id="user" name="username" class="form-control" placeholder="User Name"> -->
+                            {{ loginForm.usernameField(class="form-control", id="username", placeholder="User Name") }}
+                        </div>
+
+                        <!-- Password input -->
+                        <div class="mb-3">
+                            <!-- <input type="password" id="pass" name="password" class="form-control" placeholder="Password"> -->
+                            {{ loginForm.passwordField(class="form-control", id="password", placeholder="Password") }}
+                        </div>
+
+                        <!-- Host input -->
+                        <div class="mb-3">
+                            <!-- <input type="password" id="pass" name="password" class="form-control" placeholder="Password"> -->
+                            {{ loginForm.hostField(class="form-control", id="host", placeholder="DDAE Host") }}
+                        </div>
+
+                        <!-- Port input -->
+                        <div class="mb-3">
+                            <!-- <input type="password" id="pass" name="password" class="form-control" placeholder="Password"> -->
+                            {{ loginForm.portField(class="form-control", id="port", placeholder="Port") }}
+                        </div>
+                    
+                        <!-- Submit button -->
+                        <!-- <button type="login" id="login" class="btn btn-outline-primary">Log in</button> -->
+                        {{ loginForm.submitField(class="btn btn-outline-primary", id="login") }}
+                </div>
+            </div>
+        </div>
+    </div>   
+</div>
+{% endblock %}
+
+{% block custom_js %}
+<script type="text/javascript">
+    
+    let submitButton = document.querySelector('#login');
+
+    clicked = () => {
+        submitButton.removeAttribute("disabled");
+    }
+
+    submitButton.addEventListener("click", clicked);
+    
+
+</script>
+{% endblock %}
