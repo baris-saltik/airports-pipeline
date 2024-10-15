@@ -47,10 +47,10 @@ SuperCity Airport has a database of tables containing information on worldwide a
 
 ### Installation in Dell Data Lakehouse Hands-on Lab Environment
 
-1. Install [Python for Windows](https://www.python.org/downloads) under drive "E"
+1. Install [Python for Windows](https://www.python.org/downloads/release/python-3126/) on drive "E"
    - Select "Add Python to environment variables" in Advanced Options
    - Select "Disable Windows path limit" in the last step
-2. Install [Git for Windows](https://git-scm.com/download/win) under drive "E"
+2. Install [Git for Windows](https://git-scm.com/download/win) on drive "E"
 3. Switch into "E:", create "programs" folder and clone this repository under "programs" directory
 ```console
 E:  
