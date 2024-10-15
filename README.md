@@ -43,7 +43,7 @@ SuperCity Airport has a database of tables containing information on worldwide a
 - Lakehouse Version 1.0+
 - PostgreSQL database Version 12+
 - Windows Server 2022, Windows 11 (might work with other Windows flavours and versions but untested)
-- Python for Windows version 3.11+ (might work with earlier versions but untested)
+- Python for Windows version 3.11 - 3.12.6 (might work with earlier versions but untested)
 
 ### Installation in Dell Data Lakehouse Hands-on Lab Environment
 
