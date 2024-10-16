@@ -13,7 +13,7 @@ This web-based ELT application curates [OurAirports](https://ourairports.com/dat
 
 ### Demo/PoC Scenario
 
-SuperCity Airport has a database of tables containing information on worldwide airports. Their business applications rely on it for information such as geolocation and communication details. Even though crucial for inter-airport operations, the data in these database tables rarely changes. Runways’ status, however, changes very frequently depending on different weather and runway conditions at remote airports and is provided in the form of logs for the airport to pull in. Inter-airport operations should combine this data with the information in database tables to prevent delays in advance, reduce risks, and plan for future logistics activities.
+SuperCity Airport has a database of tables containing information on worldwide airports. Their business applications rely on it for information such as geolocation and communication details. Even though crucial for inter-airport operations, the data in these database tables rarely changes. Runways’ status, however, changes very frequently depending on different weather and runway conditions at remote airports and is provided in the form of csv files for the airport to pull in. Inter-airport operations should combine this data with the information in database tables to prevent delays in advance, reduce risks, and plan for future logistics activities.
 
 ![Scneario](/site/static/pic/data-pipeline.png)
 
