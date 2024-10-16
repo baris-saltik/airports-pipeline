@@ -372,7 +372,7 @@ CREATE SCHEMA IF NOT EXISTS {{ hiveCatalog }}.mv_cache_data WITH (location = 's3
 CREATE SCHEMA IF NOT EXISTS {{ hiveCatalog }}.mv_data WITH (location = 's3a://{{ bucketName }}/{{ hiveCatalog }}/mv_data/');
 
 -- IMPORTANT !!!
--- Add this point cluster configuration and hive catalog should be refreshed to enable Table Scan Redirection and Materialized Views before moving forward.
+-- At this point cluster configuration and hive catalog should be refreshed to enable Table Scan Redirection and Materialized Views before moving forward.
 -- Respective configuration is already in the catalog and cluster definition file.
 
 -- Iceberg materialized views are problematic, therefore Hive is used.
