@@ -1,6 +1,6 @@
 # Airports Data Pipeline Expansion To Data Lakehouse Hands-On Lab
 
-This web-based ELT application curates [OurAirports](https://ourairports.com/data/) data for a DDLH PoC or an enablement activity using Dell Data Lakehouse hands-on lab environment. It can also work in any other environment if the requirements for the app are met. The application does the following in a nutshell:
+This web-based ELT application curates [OurAirports](https://ourairports.com/data/) data for a DDLH PoC or an enablement activity using Dell Data Lakehouse hands-on lab environment. It may work in any other environment as well if the requirements for the app are met. The application does the following in a nutshell:
 
 - Downloads, extracts and loads the world's airports  data to a PostgreSQL database
 - Uploads the world's airports data including ever-changing runway data to an object storage to be used by hive external tables
