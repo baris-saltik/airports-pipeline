@@ -76,6 +76,6 @@ python airports.py
 ```console
 https://127.0.0.1:5000
 ```
-### Quick video walkthrough
+### Quick video walk-through
 
-A quick video walkthrough of the app including installation steps can be found on this [link](https://youtu.be/HcysHlb3vQk).
+A quick video walk-through of the app including installation steps can be found on this [link](https://youtu.be/HcysHlb3vQk).
