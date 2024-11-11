@@ -460,7 +460,7 @@
 
     let click_create_tables = () => {
         let itemEmpty = false
-        for(let item of createScriptsForm){
+        for(let item of databaseForm){
             if(!(item.type === "checkbox"|| item.type === "fieldset")){
                 if(!(item.value)){
                     itemEmpty = true
@@ -504,7 +504,7 @@
 
     let click_create_scripts = () => {
         let itemEmpty = false
-        for(let item of uploadForm){
+        for(let item of createScriptsForm){
             if(!(item.type === "checkbox"|| item.type === "fieldset")){
                 if(!(item.value)){
                     itemEmpty = true
