@@ -1,6 +1,6 @@
 # Airports Data Pipeline Expansion To Data Lakehouse Hands-On Lab
 
-This web-based ELT application curates [OurAirports](https://ourairports.com/data/) data for a DDLH PoC or an enablement activity using Dell Data Lakehouse hands-on lab environment. It may work in any other environment as well if the requirements for the app are met. The application does the following in a nutshell:
+This web-based ELT application that curates [OurAirports](https://ourairports.com/data/) data for a Lakehouse PoC or an enablement activity using Lakehouse hands-on lab environment. It may work in any other environment as well if the requirements for the app are met. The application does the following in a nutshell:
 
 - Downloads, extracts and loads the world's airports  data to a PostgreSQL database
 - Uploads the world's airports data including ever-changing runway data to an object storage to be used by hive external tables
@@ -45,7 +45,7 @@ SuperCity Airport has a database of tables containing information on worldwide a
 - Windows Server 2022, Windows 11 (might work with other Windows flavours and versions but untested)
 - Python for Windows version 3.11 - 3.12.6 (might work with earlier versions but untested)
 
-### Installation in Dell Data Lakehouse Hands-on Lab Environment
+### Installation in Lakehouse Hands-on Lab Environment
 
 1. Install [Python for Windows](https://www.python.org/downloads/release/python-3126/) on drive "E"
    - Select "Add Python to environment variables" in Advanced Options
@@ -76,3 +76,6 @@ python airports.py
 ```console
 https://127.0.0.1:5000
 ```
+### Quick video walkthrough
+
+A quick video walkthrough of the app including installation steps can be found on this [link](https://youtu.be/HcysHlb3vQk).
