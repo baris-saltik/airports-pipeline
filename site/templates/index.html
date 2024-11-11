@@ -385,18 +385,71 @@
 
     </div>
 </div>
+
+<!-- Operation failed message modal -->
+<div class="modal fade" id="operationFailed" tabindex="-1" aria-labelledby="operationFailedLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="operationFailedLabel">Operation failed</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div id = "operationFailedBody" class="modal-body">
+            {% with messages = get_flashed_messages() %}
+                <!-- messages is a two element list -->
+                {% if messages %}
+                    {{ messages[0] }} <br><br>
+                    {{ messages[1] }}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Close</button>
+        </div>
+
+      </div>
+    </div>
+</div>
+
 {% endblock %}
 
 
 {% block custom_js %}
 <script type="text/javascript">
+    /* Flash messages */
+    let operationFailedModal = new bootstrap.Modal(document.querySelector('#operationFailed'), {backdrop: true, keyboard: true, focus: true});
+
+    {% if session["operationFailed"] %}
+        operationFailedModal.show();
+    {% endif %}
+
+    /* Form elements that will be used by the rest of the script */
+    let downloadForm = document.querySelector("#downloadForm");
+    let databaseForm = document.querySelector("#databaseForm");
+    let uploadForm = document.querySelector("#uploadForm");
+    let createScriptsForm = document.querySelector("#createScriptsForm");
+
 
     /* Hide/Show downloadSpinner */
     let downloadSpinner = document.querySelector("#downloadSpinner");
     let downloadButton = document.querySelector("#downloadButton");
 
     let click_download = () => {
-        downloadSpinner.removeAttribute("hidden");
+        let itemEmpty = false
+        for(let item of downloadForm){
+            if(!(item.type === "checkbox"|| item.type === "fieldset")){
+                if(!(item.value)){
+                    itemEmpty = true
+                    break
+                }
+            }
+        } /* end for */
+
+        if(!(itemEmpty)){
+            downloadSpinner.removeAttribute("hidden");
+        } 
     }
 
     downloadButton.addEventListener("click", click_download);
@@ -406,8 +459,19 @@
     let createTablesButton = document.querySelector("#createTablesButton");
 
     let click_create_tables = () => {
-        let createTablesForm = document.forms[""]
-        tablesSpinner.removeAttribute("hidden");
+        let itemEmpty = false
+        for(let item of databaseForm){
+            if(!(item.type === "checkbox"|| item.type === "fieldset")){
+                if(!(item.value)){
+                    itemEmpty = true
+                    break
+                }
+            }
+        } /* end for */
+
+        if(!(itemEmpty)){
+            tablesSpinner.removeAttribute("hidden");
+        }
     }
 
     createTablesButton.addEventListener("click", click_create_tables);
@@ -417,7 +481,19 @@
     let uploadButton = document.querySelector("#uploadButton");
 
     let click_upload = () => {
-        uploadSpinner.removeAttribute("hidden");
+        let itemEmpty = false
+        for(let item of uploadForm){
+            if(!(item.type === "checkbox"|| item.type === "fieldset")){
+                if(!(item.value)){
+                    itemEmpty = true
+                    break
+                }
+            }
+        } /* end for */
+
+        if(!(itemEmpty)){
+            uploadSpinner.removeAttribute("hidden");
+        }
     }
 
     uploadButton.addEventListener("click", click_upload);
@@ -427,16 +503,24 @@
     let createScriptsButton = document.querySelector("#createScriptsButton");
 
     let click_create_scripts = () => {
-        scriptsSpinner.removeAttribute("hidden");
+        let itemEmpty = false
+        for(let item of uploadForm){
+            if(!(item.type === "checkbox"|| item.type === "fieldset")){
+                if(!(item.value)){
+                    itemEmpty = true
+                    break
+                }
+            }
+        } /* end for */
+
+        if(!(itemEmpty)){
+            scriptsSpinner.removeAttribute("hidden");
+        }
     }
 
     createScriptsButton.addEventListener("click", click_create_scripts);
 
     /* Expand/Collapse forms */
-    let downloadForm = document.querySelector("#downloadForm");
-    let databaseForm = document.querySelector("#databaseForm");
-    let uploadForm = document.querySelector("#uploadForm");
-    let createScriptsForm = document.querySelector("#createScriptsForm");
 
     let downloadTitle = document.querySelector("#download p");
     let databaseTitle = document.querySelector("#createTables p");

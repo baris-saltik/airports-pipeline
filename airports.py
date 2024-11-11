@@ -1,6 +1,6 @@
 import logging.config, sys, os
 import os, pathlib, flask, datetime, logging, time
-from flask import Flask, render_template, redirect, url_for, session, request, send_from_directory
+from flask import Flask, render_template, redirect, url_for, session, request, send_from_directory, flash
 from flask_wtf import FlaskForm
 
 
@@ -58,7 +58,7 @@ def before_request():
 def add_header(response):
     """
     Add headers to both force latest IE rendering engine or Chrome Frame,
-    and to cache the rendered page for 10 minutes.
+    and to cache the rendered page for 0 minutes.
     """
     response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate, max-age=0"
     response.headers["Pragma"] = "no-cache"
@@ -92,6 +92,7 @@ def index():
             session["filesUploaded"] = False
             session["scriptsCreated"] = False
             session['mviewPrivileges'] = config['script']['mviewPrivileges']
+            session['operationFailed'] = False
         except Exception as err:
             return redirect(url_for('login'))
         
@@ -102,6 +103,7 @@ def index():
 
     ############## Download Form ################
     if request.method == 'POST' and not session["filesDownloaded"] and downloadForm.validate_on_submit():
+        session['operationFailed'] = False
         baseWebPath = downloadForm.baseWebPathField.data
         sourcesBasePath = downloadForm.sourcesBasePathField.data
         fileNames = config['download']['fileNames']
@@ -112,14 +114,19 @@ def index():
         downloader = Download(baseWebPath = baseWebPath, sourcesBasePath = sourcesBasePath, fileNames = fileNames )
         downloader.download_files()
         session["filesDownloaded"] = downloader.filesDownloaded
+        
         if not downloader.filesDownloaded:
-            #### Flash messages goes in here! ###
-            pass
+            session['operationFailed'] = True
+            #### Flash messages goe in here! ###
+            flash("Download failed!") 
+            flash("Check the values for correctness and connectivity")
+            
 
         return render_template('index.html', downloadForm = downloadForm, databaseForm = databaseForm, uploadForm = uploadForm, controlForm = controlForm, createScriptsForm = createScriptsForm)
 
     ############## Database Form ################
     if request.method == 'POST' and not session["tablesCreated"] and databaseForm.validate_on_submit():
+        session['operationFailed'] = False
         session['commitSize'] = databaseForm.commitSizeField.data
         session['dbHost'] = databaseForm.dbHostField.data
         session['dbPort'] = databaseForm.dbPortField.data
@@ -165,13 +172,17 @@ def index():
         
         except Exception as err:
             session["tablesCreated"] = False
+            session['operationFailed'] = True
+            #### Flash messages goe in here! ###
+            flash("Tables creation failed!") 
+            flash("Check the values for correctness and connectivity")
 
         return render_template('index.html', downloadForm = downloadForm, databaseForm = databaseForm, uploadForm = uploadForm, controlForm = controlForm, createScriptsForm = createScriptsForm)
 
     
     ############## Upload Form ################
     if request.method == 'POST' and session["tablesCreated"] and not session["filesUploaded"] and uploadForm.validate_on_submit():
-
+        session['operationFailed'] = False
         session['key'] = uploadForm.keyField.data
         session['secret'] = uploadForm.secretField.data
         session['endpoint'] = uploadForm.endpointField.data
@@ -190,6 +201,10 @@ def index():
         except Exception as err:
             logger.critical(err)
             session["filesUploaded"] = False
+            session['operationFailed'] = True
+            #### Flash messages goe in here! ###
+            flash("Files upload failed!") 
+            flash("Check the values for correctness and connectivity")
 
         # time.sleep(3)
 
@@ -201,7 +216,7 @@ def index():
     if request.method == 'POST' and not session["scriptsCreated"] and session["filesDownloaded"] and session["tablesCreated"] and session["filesUploaded"] and createScriptsForm.validate_on_submit():
 
         
-
+        session['operationFailed'] = False
         logger.info("Creating DDAE scripts and setting materialized view privileges...")
         try:
             session['scriptsBasePath'] = createScriptsForm.scriptsBasePathField.data
@@ -222,14 +237,19 @@ def index():
             session["scriptsCreated"] = True
 
         except Exception as err:
+            session["scriptsCreated"] = False
+            session['operationFailed'] = False
             logger.critical(err)
-            sys.exit()
+            #### Flash messages goe in here! ###
+            flash("Scripts creation failed!") 
+            flash("Check the values for correctness")
+           
 
         session['mviewPrivileges'] = createScriptsForm.mviewPrivilegesField.data
 
         print(f"Privileges: {session['mviewPrivileges']}")
 
-        if session['mviewPrivileges']:
+        if session['mviewPrivileges'] and session["scriptsCreated"]:
             logger.info("Setting materialized view privileges...")
             #### Enter DDAE Privileges! ####
 
@@ -239,7 +259,7 @@ def index():
             try:
                 ddlh.log_in()
                 session['authenticated'] = ddlh.authenticated
-                logger.info("Scripts created")
+                logger.info("Logged into DDAE.")
 
             except Exception as err:
                 logger.error(err)
@@ -248,16 +268,32 @@ def index():
 
             if session['authenticated']:
 
-                # Table Scan Reirect Privileges
-                ddlh.create_redirect_role()
-                ddlh.assign_redirect_grants()
-                ddlh.assign_redirect_role_to_service_user()
+                try:
+                    # Table Scan Reirect Privileges
+                    ddlh.create_redirect_role()
+                    ddlh.assign_redirect_grants()
+                    ddlh.assign_redirect_role_to_service_user()
 
-                # Materialized View Privileges
-                ddlh.get_system_role_id()
-                ddlh.create_mview_role()
-                ddlh.assign_mview_grants()
-                ddlh.assign_mview_role_to_sytem_user()
+                    # Materialized View Privileges
+                    ddlh.get_system_role_id()
+                    ddlh.create_mview_role()
+                    ddlh.assign_mview_grants()
+                    ddlh.assign_mview_role_to_sytem_user()
+                except Exception as err:
+                    logger.error(err)
+                    session['operationFailed'] = True
+                    #### Flash messages goe in here! ###
+                    flash("Roles and privileges creation failed!") 
+                    flash("Check the values for correctness and connectivity")
+            
+            else:
+                    logger.error("Could not connect to DDAE!")
+                    session['operationFailed'] = True
+                    #### Flash messages goe in here! ###
+                    flash("Roles and privileges creation failed!") 
+                    flash("Check the values for correctness and connectivity")
+
+
 
         return render_template('index.html', downloadForm = downloadForm, databaseForm = databaseForm, uploadForm = uploadForm, controlForm = controlForm, createScriptsForm = createScriptsForm)
 
@@ -355,7 +391,7 @@ def login():
     except Exception as err:
         pass
 
-    session["authenticated"] = False
+    # session["authenticated"] = False
 
     loginForm = LoginForm()
 
@@ -378,7 +414,7 @@ def login():
             session["authenticated"] = False
 
         #### Bypass Authentication!!!! ########
-        # session["authenticated"] = True
+        session["authenticated"] = True
 
         if session["authenticated"]:
             return redirect(url_for('index'))
