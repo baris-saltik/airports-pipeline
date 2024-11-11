@@ -391,8 +391,6 @@ def login():
     except Exception as err:
         pass
 
-    # session["authenticated"] = False
-
     loginForm = LoginForm()
 
     # If form is submitted...
@@ -414,7 +412,7 @@ def login():
             session["authenticated"] = False
 
         #### Bypass Authentication!!!! ########
-        session["authenticated"] = True
+        # session["authenticated"] = True
 
         if session["authenticated"]:
             return redirect(url_for('index'))
