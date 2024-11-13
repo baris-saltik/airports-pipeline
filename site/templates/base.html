@@ -2,7 +2,11 @@
 <html lang="EN">
     <head>
         <meta charset="utf-8">
+        
+        {% block title %}
         <title>Airports Pipeline</title>
+        {% endblock %}
+
         <!-- favicon -->
         <link rel="icon" type="image/png" sizes="32x32" href=" {{ url_for('static', filename='icon/favicon-32x32.png') }} ">
 
